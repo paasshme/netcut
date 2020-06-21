@@ -1,3 +1,4 @@
+import nmap
 from flask import Flask, jsonify
 
 
@@ -11,12 +12,21 @@ def test():
 	
 @app.route(f'{apiPath}getIp')
 def get_all_connected_devices():
-    devices=[]
 
-    for k in range (0,10):
-        devices.append({'ip': f'192.168.0.{k*15%255}','mac':f'AA:BB:CC:DD:EE:{k}{k}'})
-    
-    return jsonify(devices)
+	print("no")
+	nmScan=nmap.PortScanner()
+	devices = nmScan.scan("192.168.0.1/23","1")
+
+
+	print(devices["scan"])
+
+	ips=[]
+	for k in devices["scan"]:
+		ips.append(k)
+	#for k in range(int(devices['nmap']['scanstats']['uphosts'])):
+	#	continue
+		
+	return jsonify(ips)
 
 @app.route(f'{apiPath}<string:ip>/<int:nb>')
 def cut_ip(ip,nb):

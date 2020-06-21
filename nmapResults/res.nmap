@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.80 scan initiated Sat Jun 20 23:05:31 2020 as: nmap -oX res.nmap -sn -sP -P 192.168.0.0/23 -->
+<nmaprun scanner="nmap" args="nmap -oX res.nmap -sn -sP -P 192.168.0.0/23" start="1592687131" startstr="Sat Jun 20 23:05:31 2020" version="7.80" xmloutputversion="1.04">
+<verbose level="0"/>
+<debugging level="0"/>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.0.254" addrtype="ipv4"/>
+<address addr="10:FE:ED:AC:49:1A" addrtype="mac" vendor="Tp-link Technologies"/>
+<hostnames>
+</hostnames>
+<times srtt="5023" rttvar="5023" to="100000"/>
+</host>
+<host><status state="up" reason="localhost-response" reason_ttl="0"/>
+<address addr="192.168.0.102" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</host>
+<host><status state="up" reason="echo-reply" reason_ttl="63"/>
+<address addr="192.168.1.4" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Galaxy-A51" type="PTR"/>
+</hostnames>
+<times srtt="283713" rttvar="283713" to="1418565"/>
+</host>
+<host><status state="up" reason="echo-reply" reason_ttl="64"/>
+<address addr="192.168.1.5" addrtype="ipv4"/>
+<hostnames>
+<hostname name="TL-WR710N" type="PTR"/>
+</hostnames>
+<times srtt="2229" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="echo-reply" reason_ttl="127"/>
+<address addr="192.168.1.64" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Heavy-Computer-sama" type="PTR"/>
+</hostnames>
+<times srtt="4730" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="echo-reply" reason_ttl="63"/>
+<address addr="192.168.1.68" addrtype="ipv4"/>
+<hostnames>
+<hostname name="Chromecast" type="PTR"/>
+</hostnames>
+<times srtt="8275" rttvar="8275" to="100000"/>
+</host>
+<host><status state="up" reason="echo-reply" reason_ttl="63"/>
+<address addr="192.168.1.254" addrtype="ipv4"/>
+<hostnames>
+<hostname name="bbox.lan" type="PTR"/>
+</hostnames>
+<times srtt="2554" rttvar="5000" to="100000"/>
+</host>
+<runstats><finished time="1592687142" timestr="Sat Jun 20 23:05:42 2020" elapsed="10.20" summary="Nmap done at Sat Jun 20 23:05:42 2020; 512 IP addresses (7 hosts up) scanned in 10.20 seconds" exit="success"/><hosts up="7" down="505" total="512"/>
+</runstats>
+</nmaprun>
