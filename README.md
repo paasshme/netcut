@@ -1,16 +1,15 @@
-**Netcut tests**
-**DEPRECATED**
-
+# installation
 Avec python3 et pip:
 
 
 Linux :
 ```shell
-. venv/bin/activate
-pip install Flask
-export FLASK_APP=test.py
-export FLASK_ENV=development "Not necessary
-flask run
+install the deps
+$ pip install -r requirement.txt
+launch the server with su permissions (required)
+$ sudo python serv.py
 ```
+
+# Documentation
 
 

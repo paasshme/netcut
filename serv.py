@@ -1,6 +1,5 @@
-import asyncio, websockets, json, time
+import asyncio, websockets, json, time, threading
 import netcututils as nc
-import threading
 from scapy.all import *
 #Return an array with every IP of connected devices (on local network)
 defaultGateway = "192.168.0.254"

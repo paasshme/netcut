@@ -53,8 +53,6 @@ def sniffing(src, dst):
         sys.stdout.flush()
         send(pkg)
     
-
-
     sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: not getattr(threading.currentThread(), "do_run", True) )
     # sniff(prn=editPkg)
 
