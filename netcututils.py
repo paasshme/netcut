@@ -53,10 +53,9 @@ def sniffing(src, dst):
         sys.stdout.flush()
         send(pkg)
     
-    def stop(x):
-        return not getattr(threading.currentThread(), "do_run", True)
 
-    sniff(prn=editPkg, filter="src " + src, stop_filter = stop)
+
+    sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: not getattr(threading.currentThread(), "do_run", True) )
     # sniff(prn=editPkg)
 
 
