@@ -6,10 +6,12 @@ def nmap_scan(target_ip= '192.168.0.0/24'):
     nmScan=nmap.PortScanner()
     print("scan begin")
     devices = nmScan.scan(target_ip,"1")
+    print(devices)
     ips=[]
     for ip in devices["scan"]:
         ips.append(ip)
-    
+
+    print(ips)
     return ips
 
 # Return IP & Mac of every connected client (Need root)
@@ -23,9 +25,7 @@ def arp_scan(target_ip = '192.168.0.0/24'):
     ether = Ether(dst='ff:ff:ff:ff:ff:ff')
     # stack them
     packet = ether/arp
-
     result = srp(packet, timeout=3, verbose=0)[0]
-
     # a list of clients, we will fill this in the upcoming loop
     clients = []
 
@@ -42,7 +42,10 @@ def arp_scan(target_ip = '192.168.0.0/24'):
     return clients
 
 
+def craft_arp_spoof(target_ip, gateway_ip):
+    return ARP(op = 2, psrc = gateway_ip, pdst = target_ip)
 
 if __name__=='__main__':
-    arp_scan('192.168.2.0/24')
+    # arp_scan('192.168.2.0/24')
     arp_scan()
+    arp_spoof("aaa")
