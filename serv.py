@@ -3,6 +3,8 @@ import netcututils as nc
 import threading
 from scapy.all import *
 #Return an array with every IP of connected devices (on local network)
+spoofed = []
+defaultGateway = "192.168.0.254"
 
 def doit(arg):
     t = threading.currentThread()
@@ -21,14 +23,17 @@ async def echo(websocket, path):
         elif request[0] == "arp_scan":
             await websocket.send(json.dumps(nc.arp_scan()))
         elif request[0] == "arp_spoof":
-            # thread.setArp()
-            # thread.start()
-            t = threading.Thread(target=doit, args=(nc.craft_arp_spoof("192.168.0.32", "192.168.0.254"),))
-            t.start()
+            if request.len() > 2 && spoofed.count(request[1]) < 1 :
+                spoofed.add(request[1])
+                t = threading.Thread(target=doit, args=(request[1], request[2]))
+                t.start()
+            elif request.len() = 2 && spoofed.count(request[1]) < 1 :
+                spoofed.add(request[1])
+                t = threading.Thread(target=doit, args=(request[1], defaultGateway))
+                t.start()
+        elif request[0] == "gateway":
+            this.defaultGateway = request[1]    
         elif request[0] == "stop":
-            # thread.stop()
-            # thread.join()
-            # print("re")
             t.do_run = False
             t.join()
         else:
