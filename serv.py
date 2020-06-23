@@ -1,7 +1,8 @@
 import asyncio, websockets, json, time, threading
 import netcututils as nc
 from scapy.all import *
-#Return an array with every IP of connected devices (on local network)
+
+
 defaultGateway = "192.168.0.254"
 spoofed = []
 sniffed = []
@@ -24,7 +25,7 @@ def sniff(target_ip, gateway_ip):
     t = threading.currentThread()
     nc.sniffing(target_ip, gateway_ip)
 
-async def echo(websocket, path):
+async def process(websocket, path):
     
     async for message in websocket:
         
@@ -49,17 +50,21 @@ async def echo(websocket, path):
                 spoofingThread.insert(spoofed.index(request[1]), t)
 
                 t.start()
+            else:
+                await websocket.send(json.dumps("Error" : "number of argument supplied is not correct"))
+
+
 
         elif request[0] == "sniff":
             if len(request) == 2:
                 sniffed.append(request[1])
-                print(sniffed)
-                t = threading.Thread(target=sniff, args=(request[1], defaultGateway))
+                t = threading.Thread(target=sniff, args=(request[1], defaultGateway, websocket))
                 sniffingThread.insert(sniffed.index(request[1]), t)
-                print(sniffingThread)
                 t.start()
+            else:
+                await websocket.send(json.dumps("Error": "number of argument supplied is not equal to 2")
 
-        elif request[0] == "gateway":
+        elif request[0] == "set_gateway":
             this.defaultGateway = request[1]   
 
         elif request[0] == "spoof_stop":
@@ -67,19 +72,19 @@ async def echo(websocket, path):
             spoofed.remove(request[1])
             t.do_run = False
             t.join()
-            print(t)
+
         elif request[0] == "sniff_stop":
             t = sniffingThread[sniffed.index(request[1])]
             sniffed.remove(request[1])
             t.do_run = False
             t.join()
-            print(t)
+
         else:
             await websocket.send("this request doesn't exist")
         
 
 asyncio.get_event_loop().run_until_complete(
-    websockets.serve(echo, 'localhost', 8765))
+    websockets.serve(process, 'localhost', 8765))
 asyncio.get_event_loop().run_forever()
 
 
