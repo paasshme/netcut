@@ -1,4 +1,5 @@
 **Netcut tests**
+**DEPRECATED**
 
 Avec python3 et pip:
 
