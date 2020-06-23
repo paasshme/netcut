@@ -9,20 +9,23 @@ apiPath = '/api/'
 @app.route(f'{apiPath}')
 def test():
 	return "Page de base"
-	
+
+@app.errorhandler(404)
+def error_404(e):
+	return "Page non trouvée. Essayer /api/"
+
+
 @app.route(f'{apiPath}getIp')
 def get_all_connected_devices():
 
-	print("no")
 	nmScan=nmap.PortScanner()
 	devices = nmScan.scan("192.168.0.1/23","1")
 
 
-	print(devices["scan"])
-
+	#print(devices["scan"])
 	ips=[]
-	for k in devices["scan"]:
-		ips.append(k)
+	for ip in devices["scan"]:
+		ips.append(ip)
 	#for k in range(int(devices['nmap']['scanstats']['uphosts'])):
 	#	continue
 		
