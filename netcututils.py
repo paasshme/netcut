@@ -41,6 +41,16 @@ def arp_scan():
     return clients
 
 
+def sniffing(src, dst):
+    def editPkg(pkg):
+        pkg.src = src
+        pkg.dst = dst
+        pkg.show
+        print(pkg.show)
+        # send(pkg)
+
+    # sniff(prn=editPkg, filter="src " + src)
+    sniff(prn=editPkg)
 
 if __name__=='__main__':
-    arp_scan()
+    sniffing("1.1.1.1", "0.0.0.0")
