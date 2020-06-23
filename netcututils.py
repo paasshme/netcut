@@ -46,7 +46,6 @@ def sniffing(src, dst):
     def editPkg(pkg):
         pkg.src = src
         pkg.dst = dst
-        pkg.show
         print(pkg.show)
         # send(pkg)
 
