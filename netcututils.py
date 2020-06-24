@@ -6,7 +6,7 @@ Netcut library containing a few useful functions to Scan, Spoof (with ARP), and 
 WIP: Deauth attack, fake wifi router (need Interface in monitor mode (not promiscious))
 """
 
-# Return IP & Mac of every connected device (Root might be useful be not necessary)
+# Return IP of every connected device (Root might be useful be not necessary)
 def nmap_scan(target_ip= '192.168.0.0/24'):
     nmScan=nmap.PortScanner()
     print("scan begin")
