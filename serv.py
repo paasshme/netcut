@@ -69,7 +69,7 @@ async def process(websocket, path):
         elif request[0] == "sniff":
             if len(request) == 2:
                 sniffed.append(request[1])
-                t = threading.Thread(target=sniff, args=(request[1], defaultGateway, websocket))
+                t = threading.Thread(target=sniff, args=(request[1], defaultGateway))
                 sniffingThread.insert(sniffed.index(request[1]), t)
                 t.start()
 
