@@ -52,18 +52,18 @@ async def process(websocket, path):
 
                 t.start()
             else:
-                await websocket.send(json.dumps("Error" : "number of argument supplied is not correct"))
+                await websocket.send(json.dumps("Error number of argument supplied is not correct"))
 
 
 
         elif request[0] == "sniff":
             if len(request) == 2:
                 sniffed.append(request[1])
-                t = threading.Thread(target=sniff, args=(request[1], defaultGateway, websocket))
+                t = threading.Thread(target=sniff, args=(request[1], defaultGateway))
                 sniffingThread.insert(sniffed.index(request[1]), t)
                 t.start()
             else:
-                await websocket.send(json.dumps("Error": "number of argument supplied is not equal to 2")
+                await websocket.send(json.dumps("Error number of argument supplied is not equal to 2"))
 
         elif request[0] == "set_gateway":
             this.defaultGateway = request[1]   
