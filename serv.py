@@ -26,6 +26,9 @@ def sniff(target_ip, gateway_ip):
     t = threading.currentThread()
     nc.sniffing(target_ip, gateway_ip)
 
+
+    
+
 async def process(websocket, path):
     
     async for message in websocket:
@@ -80,10 +83,28 @@ async def process(websocket, path):
             t.do_run = False
             t.join()
 
+        elif request[0] == "smart_sniff":
+            if len(request) >= 2 and not request[1] in spoofed and not request[1] in sniffed:
+                spoofed.append(request[1])
+                sniffed.append(request[1])
+
+                #TODO
+
+            elif len(request) == 2 and not request[1] in spoofed and not request[1] in sniffed:
+                spoofed.append(request[1])
+                sniffed.append(request[1])
+
+                #TODO 
+
+            else:
+                await websocket.send(json.dumps("Error number of argument supplied is not correct"))
+
+
+
         else:
             await websocket.send("this request doesn't exist")
         
-
+# Server launch, starting with the 'process' function
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(process, 'localhost', 8765))
 asyncio.get_event_loop().run_forever()
