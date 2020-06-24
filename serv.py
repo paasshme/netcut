@@ -102,17 +102,15 @@ async def process(websocket, path):
             await websocket.send(json.dumps(sniffed))
 
         elif request[0] == "smart_sniff":
-            if len(request) >= 2 and not request[1] in spoofed and not request[1] in sniffed:
+            if len(request) > 2 and not request[1] in spoofed and not request[1] in sniffed:
                 spoofed.append(request[1])
                 sniffed.append(request[1])
-
-                #TODO
+                nc.smart_sniff(request[1], request[2])
 
             elif len(request) == 2 and not request[1] in spoofed and not request[1] in sniffed:
                 spoofed.append(request[1])
                 sniffed.append(request[1])
-
-                #TODO 
+                nc.smart_sniff(request[1], defaultGateway)
 
             else:
                 await websocket.send(json.dumps("Error number of argument supplied is not correct"))

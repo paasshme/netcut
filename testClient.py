@@ -3,11 +3,7 @@ import websockets
 
 async def hello(uri):
 	async with websockets.connect(uri) as ws:
-		await ws.send(json.dumps(("arp_spoof", "192.168.0.21")))
-		await ws.send(json.dumps(("sniff", "192.168.0.21")))
-		input("input")
-		await ws.send(json.dumps(("spoof_stop", "192.168.0.21")))
-		await ws.send(json.dumps(("sniff_stop", "192.168.0.21")))
+		await ws.send(json.dumps(("smart_sniff", "192.168.0.11")))
 		print("sended")
 		# a=await ws.recv()
 		# print(a)

