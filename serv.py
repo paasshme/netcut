@@ -21,20 +21,31 @@ def spoof(target_ip, gateway_ip):
     # Reset the network back to its initial state (this is basically a correct ARP packet from a gateway to a target)
     send(ARP(op = 2, psrc = gateway_ip, hwsrc = getmacbyip(gateway_ip), pdst = target_ip, hwdst = getmacbyip(target_ip)))
 
-def sniff(target_ip, gateway_ip):
+def sniff(target_ip, gateway_ip, ws):
     t = threading.currentThread()
-    nc.sniffing(target_ip, gateway_ip)
+    print(ws)
+    nc.sniffing(target_ip, gateway_ip, ws)
 
 async def process(websocket, path):
     
     async for message in websocket:
-        
+        print(message)
         request = json.loads(message)
+        print(request)
         if request[0] == "nmap_scan":
-            await websocket.send(json.dumps(nc.nmap_scan()))
+
+            if len(request) == 1:
+                await websocket.send(json.dumps(nc.nmap_scan()))
+            elif len(request) > 1:
+                await websocket.send(json.dumps(nc.nmap_scan(request[1])))
 
         elif request[0] == "arp_scan":
-            await websocket.send(json.dumps(nc.arp_scan()))
+
+            if len(request) == 1:
+                # await websocket.send(json.dumps(nc.arp_scan()))
+                print(json.dumps(nc.arp_scan()))
+            elif len(request) > 1:
+                await websocket.send(json.dumps(nc.arp_scan(request[1])))
 
         elif request[0] == "arp_spoof":
 
@@ -51,7 +62,7 @@ async def process(websocket, path):
 
                 t.start()
             else:
-                await websocket.send(json.dumps("Error" : "number of argument supplied is not correct"))
+                await websocket.send(json.dumps("Error : number of argument supplied is not correct"))
 
 
 
@@ -61,8 +72,9 @@ async def process(websocket, path):
                 t = threading.Thread(target=sniff, args=(request[1], defaultGateway, websocket))
                 sniffingThread.insert(sniffed.index(request[1]), t)
                 t.start()
+
             else:
-                await websocket.send(json.dumps("Error": "number of argument supplied is not equal to 2")
+                await websocket.send(json.dumps("Error: number of argument supplied is not equal to 2"))
 
         elif request[0] == "set_gateway":
             this.defaultGateway = request[1]   
