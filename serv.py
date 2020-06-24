@@ -21,10 +21,9 @@ def spoof(target_ip, gateway_ip):
     # Reset the network back to its initial state (this is basically a correct ARP packet from a gateway to a target)
     send(ARP(op = 2, psrc = gateway_ip, hwsrc = getmacbyip(gateway_ip), pdst = target_ip, hwdst = getmacbyip(target_ip)))
 
-def sniff(target_ip, gateway_ip, ws):
+def sniff(target_ip, gateway_ip):
     t = threading.currentThread()
-    print(ws)
-    nc.sniffing(target_ip, gateway_ip, ws)
+    nc.sniffing(target_ip, gateway_ip)
 
 
     
