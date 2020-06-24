@@ -72,7 +72,11 @@ async def process(websocket, path):
                 t = threading.Thread(target=sniff, args=(request[1], defaultGateway))
                 sniffingThread.insert(sniffed.index(request[1]), t)
                 t.start()
-
+            if len(request) > 2:
+                sniffed.append(request[1])
+                t = threading.Thread(target=sniff, args=(request[1], request[2]))
+                sniffingThread.insert(sniffed.index(request[1]), t)
+                t.start()
             else:
                 await websocket.send(json.dumps("Error: number of argument supplied is not equal to 2"))
 
@@ -90,6 +94,10 @@ async def process(websocket, path):
             sniffed.remove(request[1])
             t.do_run = False
             t.join()
+        elif request[0] =="get_spoofed":
+            await websocket.send(json.dumps(spoofed))
+        elif request[0] =="get_sniffed":
+            await websocket.send(json.dumps(sniffed))
 
         else:
             await websocket.send("this request doesn't exist")
