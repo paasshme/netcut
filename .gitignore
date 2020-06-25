@@ -1,6 +1,6 @@
 venv/
 python-nmap-0.6.1/
-__pycache__
+__pycache__/
 nmapResults/
 pcap/
 *.algo
