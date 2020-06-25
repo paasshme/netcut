@@ -2,9 +2,6 @@ import asyncio, websockets, json, time, threading
 import netcututils as nc
 from scapy.all import *
 
-import asyncio, websockets, json, time, threading
-import netcututils as nc
-from scapy.all import *
 
 def spoof(target_ip, gateway_ip):
     t = threading.currentThread()
