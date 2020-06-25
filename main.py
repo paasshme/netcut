@@ -1,10 +1,6 @@
 import asyncio, websockets, json, time, threading
 import netcututils as nc
 from scapy.all import *
-
-import asyncio, websockets, json, time, threading
-import netcututils as nc
-from scapy.all import *
 import controller as c
 import sys
 
