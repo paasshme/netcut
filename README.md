@@ -1,6 +1,5 @@
-# installation
-Avec python3 et pip:
-
+# Installation
+With python3 and pip:
 
 Linux :
 ```shell
@@ -13,6 +12,8 @@ $ sudo python serv.py
 # Documentation
 The server use json through websockets to communicate with the client : 
 ["command", "arg1", "arg2", [...]]
+You can find an instance of a python client in testClient.py 
+
 ## Here are the request that the server currently recognize : 
 * ### nmap_scan
     Return IP of every connected device using nmap
