@@ -1,6 +1,5 @@
-# installation
-Avec python3 et pip:
-
+# Installation
+With python3 and pip:
 
 Linux :
 ```shell
@@ -9,11 +8,29 @@ $ pip install -r requirement.txt
 launch the server with su permissions (required)
 $ sudo python serv.py
 ```
+Using a python3 virtual environment (venv) :
+
+Create a venv and activate it
+```shell
+$ python -m venv venv
+$ . venv/bin/activate
+```
+Install the deps
+```shell
+$ pip install -r requirement.txt
+```
+Launch the server with su permissions (required)
+```shell
+$ sudo python serv.py
+```
 
 # Documentation
-use '-s' or '--server' to lauch the program in server mode and communicate with websocket, otherwise the program wil be launched in standalone mode  
-The server use json through websockets to communicate with the client : 
-["command", "arg1", "arg2", [...]]
+use '-s' or '--server' parameter to lauch the program in server mode and communicate with websocket, otherwise the program wil be launched in standalone mode </br> 
+
+The server use json through websockets to communicate with the client : </br>
+["command", "arg1", "arg2", [...]] </br>
+You can find an instance of a python client in testClient.py 
+
 ## Here are the request that the server currently recognize : 
 * ### nmap_scan
     Return IP of every connected device using nmap
