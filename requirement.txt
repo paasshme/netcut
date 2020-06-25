@@ -1,3 +1,4 @@
 websockets>=8.1
 jsonify>=0.5
 scapy>=2.4.3
+python-nmap>=0.6.1

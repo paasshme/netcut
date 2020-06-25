@@ -8,6 +8,21 @@ $ pip install -r requirement.txt
 launch the server with su permissions (required)
 $ sudo python serv.py
 ```
+Using a python3 virtual environment (venv) :
+
+Create a venv and activate it
+```shell
+$ python -m venv venv
+$ . venv/bin/activate
+```
+Install the deps
+```shell
+$ pip install -r requirement.txt
+```
+Launch the server with su permissions (required)
+```shell
+$ sudo python serv.py
+```
 
 # Documentation
 The server use json through websockets to communicate with the client : </br>
