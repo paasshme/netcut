@@ -11,6 +11,7 @@ $ sudo python serv.py
 ```
 
 # Documentation
+use '-s' or '--server' to lauch the program in server mode and communicate with websocket, otherwise the program wil be launched in standalone mode  
 The server use json through websockets to communicate with the client : 
 ["command", "arg1", "arg2", [...]]
 ## Here are the request that the server currently recognize : 
