@@ -10,8 +10,8 @@ $ sudo python serv.py
 ```
 
 # Documentation
-The server use json through websockets to communicate with the client : 
-["command", "arg1", "arg2", [...]]
+The server use json through websockets to communicate with the client : </br>
+["command", "arg1", "arg2", [...]] </br>
 You can find an instance of a python client in testClient.py 
 
 ## Here are the request that the server currently recognize : 
