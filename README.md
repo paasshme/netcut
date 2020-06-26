@@ -4,7 +4,7 @@ With python3 and pip:
 Linux :
 ```shell
 install the deps
-$ pip install -r requirement.txt
+$ pip install -r requirements.txt
 launch the server with su permissions (required)
 $ sudo python serv.py
 ```
@@ -17,7 +17,7 @@ $ . venv/bin/activate
 ```
 Install the deps
 ```shell
-$ pip install -r requirement.txt
+$ pip install -r requirements.txt
 ```
 Launch the server with su permissions (required)
 ```shell
